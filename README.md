@@ -60,6 +60,7 @@ The Ranora apprentice supervisor also wants the main program created by Ranora t
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
@@ -67,57 +68,63 @@ The Ranora apprentice supervisor also wants the main program created by Ranora t
 #include <string.h>
 #include <time.h>
 
-int main() {
-  pid_t pid, sid;      
 
-  pid = fork();     
+int main(char *argv[]) {
 
+  pid_t pid, sid;
+
+  pid = fork();  
+  
 
   if (pid < 0) {
     exit(EXIT_FAILURE);
   }
 
+
   if (pid > 0) {
     exit(EXIT_SUCCESS);
   }
+  
 
   umask(0);
+  
 
   sid = setsid();
   if (sid < 0) {
     exit(EXIT_FAILURE);
   }
 
-  if ((chdir("/")) < 0) {
+
+  if ((chdir("/home/asusry/soal3shift2/")) < 0) {
     exit(EXIT_FAILURE);
   }
+  
 
   close(STDIN_FILENO);
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
+  
 
-  while (1) {
-    // Tulis program kalian di sini
-    pid_t child_id;
-
+  while (1) {    
+   
+    //get timestamp
     time_t t = time(NULL);
-    struct tm*w = localtime(&t);
+    struct tm w = *localtime(&t);
     
     char timestamp[100];
+    char d[100] = {"/home/asusry/Documents/"};
     
-    strftime (timestamp, 100, "%Y-%m-%d_%H:%M:%S", w);
-
-    child_id=fork();
+    sprintf(timestamp,"%02d-%02d-%02d_%02d:%02d:%02d",w.tm_mday, w.tm_mon + 1, w.tm_year + 1900, w.tm_hour, w.tm_min, w.tm_sec);
     
-    if (child_id==0){
-    char *arg[]= {"mkdir", timestamp, NULL};
-    execv("/bin/mkdir", arg);
-    }
+    //make a directory with current timestamp name
+    mkdir(timestamp,0777);
 
-    if (child_id<0){
-      exit(0);
-    }
+    //change directory into newly created
+    strcat(d,timestamp);
+    chdir(d);
+
+    //loop with interval 30s
     sleep(40);
-  }
+  };
 }
 ```
