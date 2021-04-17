@@ -30,6 +30,9 @@ When it’s her birthday, all folder will be zipped with the name Lopyu_Stevany.
 ### f
 To make his life easier, he wants all of the above to run automatically 6 hours before her birthday (except for point e of course)
 
+### Note :
+- Stevany’s birthday : 09 April Pukul 22.22 WIB
+- All points are run by 1 script on the background, that includes downloading the zip file. So you just need to run 1 script and change the time and date to check the result.
 
 ## Problem 2
 ## Problem 3
