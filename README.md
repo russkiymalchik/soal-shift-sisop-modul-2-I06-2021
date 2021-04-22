@@ -42,6 +42,103 @@ Loba works in a famous pet shop, one day he got a zip containing lots of pets ph
 ### 2a
 First, the program needs to extract the given zip into the folder “/home/[user]/modul2/petshop”. Because Loba's boss is careless, the zip may contain unimportant folders, so the program must be able to distinguish between files and folders so that it can process files that should be worked on and delete unnecessary folders.
 
+### Problem Solving
+
+First, make two directory to store the data, in this case we use temp and petshop.
+
+```
+
+child_id = fork();
+
+    if (child_id < 0) {
+        exit(EXIT_FAILURE);
+    }
+
+    if (child_id == 0) {
+        char *argv[] = {"mkdir", "-p","/home/juancarlos/temp", NULL};
+        execv("/usr/bin/mkdir", argv);
+    }
+    else {
+        while ((wait(&status)) > 0); 
+    
+        child_id1 = fork();
+
+        if (child_id1 == 0) {
+            char *argv[] = {"mkdir", "-p","/home/juancarlos/modul2/petshop", NULL};
+            execv("/usr/bin/mkdir", argv);
+        }
+        else {
+            while ((wait(&status1)) > 0);
+            
+```
+
+After that, unzip the given data in Downloads/pets.zip into temp directory.
+
+```
+
+child_id2 = fork();
+
+            if (child_id2 == 0) {
+                char *argv[] = {"unzip", "Downloads/pets.zip","-d", "/home/juancarlos/temp", NULL};
+                execv("/usr/bin/unzip", argv);
+            }
+            else {
+                while ((wait(&status2)) > 0); 
+                
+```
+
+Separate file from unimportant folder using DT_REG, and move the file into petshop directory.
+
+```
+
+child_id3 = fork();
+
+                if (child_id3 == 0) {
+                    struct dirent *pic;
+                    DIR *dir = opendir ("/home/juancarlos/temp");
+
+                    if (dir == NULL){
+                        return 0;
+                    }
+
+                    while ((pic = readdir(dir)) != NULL) {
+                        if(pic->d_type == DT_REG){
+                            child_id4 = fork();
+                            if (child_id4 == 0){
+                                char path[500];
+                                sprintf(path, "/home/juancarlos/temp/%s", pic->d_name);
+                                char *argv[] = {"mv", path, "/home/juancarlos/modul2/petshop", NULL};
+                                execv("/usr/bin/mv", argv);
+                            }
+                            while ((wait(&status4)) > 0); 
+                        }
+                    }
+                (void) closedir (dir);
+                }
+                else {
+                    while ((wait(&status3)) > 0);
+                    
+```
+
+Last step, remove temp directory with its unimportant folder inside.
+
+```
+
+child_id5 = fork();
+
+                    if (child_id5 < 0) {
+                        exit(EXIT_FAILURE);
+                    }
+
+                    if (child_id5 == 0) {
+                        char *argv[] = {"rm","-r", "/home/juancarlos/temp", NULL};
+                        execv("/usr/bin/rm", argv);
+                    }
+                    else {
+                        while ((wait(&status5)) > 0);
+
+```
+
 ### 2b
 Pet photos need to be categorized based on the pet's species, so you will need to create a folder for each species that is in the zip file. Since you can't possibly check manually, the program needs to create the required folders according to the contents of the zip file.
 Example: Cats will be stored in "/petshop/cat", turtles will be stored in "/petshop/turtle".
