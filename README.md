@@ -138,6 +138,9 @@ child_id5 = fork();
                         while ((wait(&status5)) > 0);
 
 ```
+Below is the result of 2a
+
+![alt text](https://github.com/russkiymalchik/soal-shift-sisop-modul-2-I06-2021/blob/main/screenshots/result2a.png)
 
 ### 2b
 Pet photos need to be categorized based on the pet's species, so you will need to create a folder for each species that is in the zip file. Since you can't possibly check manually, the program needs to create the required folders according to the contents of the zip file.
