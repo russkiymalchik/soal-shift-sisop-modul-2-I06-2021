@@ -76,7 +76,7 @@ After that, unzip the given data in Downloads/pets.zip into temp directory.
 
 ```
 
-child_id2 = fork();
+            child_id2 = fork();
 
             if (child_id2 == 0) {
                 char *argv[] = {"unzip", "Downloads/pets.zip","-d", "/home/juancarlos/temp", NULL};
@@ -91,7 +91,7 @@ Separate file from unimportant folder using DT_REG, and move the file into petsh
 
 ```
 
-child_id3 = fork();
+                child_id3 = fork();
 
                 if (child_id3 == 0) {
                     struct dirent *pic;
@@ -124,7 +124,7 @@ Last step, remove temp directory with its unimportant folder inside.
 
 ```
 
-child_id5 = fork();
+                    child_id5 = fork();
 
                     if (child_id5 < 0) {
                         exit(EXIT_FAILURE);
@@ -138,6 +138,7 @@ child_id5 = fork();
                         while ((wait(&status5)) > 0);
 
 ```
+
 Below is the result of 2a
 
 ![alt text](https://github.com/russkiymalchik/soal-shift-sisop-modul-2-I06-2021/blob/main/screenshots/result2a.png)
@@ -145,6 +146,53 @@ Below is the result of 2a
 ### 2b
 Pet photos need to be categorized based on the pet's species, so you will need to create a folder for each species that is in the zip file. Since you can't possibly check manually, the program needs to create the required folders according to the contents of the zip file.
 Example: Cats will be stored in "/petshop/cat", turtles will be stored in "/petshop/turtle".
+
+### Problem Solving
+
+First, read the petshop directory in our device.
+
+```
+                        DIR *dir1;
+                        struct dirent *pic1;
+                        dir1 = opendir("/home/juancarlos/modul2/petshop");
+
+```
+
+The foler will be named according to pet type. So, for the solution the program only read the file name until it meets ";". 
+
+```
+
+                        while ((pic1 = readdir(dir1)) != NULL) {
+                            if((pic1->d_type == DT_REG) && strcmp(pic1->d_name, ".") != 0 && strcmp(pic1->d_name, "..") != 0) {
+                                char path1[100] = "";
+                                strcpy(path1, pic1->d_name);
+                                char directname [100] = "/home/juancarlos/modul2/petshop/";
+                                strtok (path1, ";" );
+                                strcat(directname, path1);
+
+```
+Use mkdir to make the folder according to its type and place the folder inside petshop directory.
+
+```
+
+                                child_id6 = fork();
+
+                                if (child_id6 < 0) {
+                                    exit(EXIT_FAILURE);
+                                }
+                        
+                                if (child_id6 == 0) {
+                                    char *argv[] = {"mkdir", "-p",directname, "/home/juancarlos/modul2/petshop", NULL};
+                                    execv("/usr/bin/mkdir", argv);
+                                }
+                                else {
+                                    while ((wait(&status6)) > 0);
+
+```
+
+Below is the result of 2b
+
+![alt text](https://github.com/russkiymalchik/soal-shift-sisop-modul-2-I06-2021/blob/main/screenshots/result2b.png)
 
 ### 2c
 After the folders are created, your program should move the photos to the folder based on their respective species and rename the photo with the pet's name.
