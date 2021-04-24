@@ -48,7 +48,7 @@ First, make two directory to store the data, in this case we use temp and petsho
 
 ```
 
-child_id = fork();
+    child_id = fork();
 
     if (child_id < 0) {
         exit(EXIT_FAILURE);
