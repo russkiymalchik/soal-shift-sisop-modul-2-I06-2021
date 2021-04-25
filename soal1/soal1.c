@@ -13,6 +13,9 @@
 
 int status;
 
+//sudo date --set="2021-04-09 16:21:59"
+//sudo date --set="2021-04-09 22:21:59"
+
 void makeDirectory()
 {
   char *mkdir[] = {"mkdir", "-p", "Pyoto", "Musyik", "Fylm", NULL};
@@ -63,7 +66,7 @@ void zip()
 
 void removeTheRest()
 {
-  char *rm[] = {"rm", "-r", "Fylm", "Musyik", "Pyoto", "Photo_for_Stevany.zip", "Music_for_Stevany.zip", "Film_for_Stevany.zip", NULL};
+  char *rm[] = {"rm", "-r", "Fylm", "Musyik", "Pyoto", "Pyoto_for_Stevany.zip", "Musyik_for_Stevany.zip", "Fylm_for_Stevany.zip", NULL};
   execv("/bin/rm", rm);
 }
 
@@ -195,5 +198,3 @@ int main()
     sleep(1);
   }
 }
-
-//note : I'm still having trouble changing the system's date and time. Everytime I change it, it keeps reverting back to today's date and time.
