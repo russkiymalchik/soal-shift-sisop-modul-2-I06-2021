@@ -51,6 +51,9 @@ To make his life easier, he wants all of the above to run automatically 6 hours 
 
 int status;
 
+//sudo date --set="2021-04-09 16:21:59"
+//sudo date --set="2021-04-09 22:21:59"
+
 void makeDirectory()
 {
   char *mkdir[] = {"mkdir", "-p", "Pyoto", "Musyik", "Fylm", NULL};
@@ -101,7 +104,7 @@ void zip()
 
 void removeTheRest()
 {
-  char *rm[] = {"rm", "-r", "Fylm", "Musyik", "Pyoto", "Photo_for_Stevany.zip", "Music_for_Stevany.zip", "Film_for_Stevany.zip", NULL};
+  char *rm[] = {"rm", "-r", "Fylm", "Musyik", "Pyoto", "Pyoto_for_Stevany.zip", "Musyik_for_Stevany.zip", "Fylm_for_Stevany.zip", NULL};
   execv("/bin/rm", rm);
 }
 
