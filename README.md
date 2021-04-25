@@ -408,6 +408,14 @@ Example: photo with the name "dog;baro;1_cat;joni;2.jpg" is moved to the folder 
 ### 2e
 In each folder, create a file "keterangan.txt" that contains names and ages of all the pets in the folder.
 
+### Error When Solving Problem 2
+
+1. The temp folder with unimportant folders in it does not want to be deleted ( Problem 2a ).
+
+2. The folders name in the petshop directory are not what we expected ( Problem 2b ).
+
+3. When the program start, the folders that we create according to the types of pet appear in another location ( Problem 2b ).
+
 ## Problem 3
 Ranora is an Informatics Engineering student who is currently undergoing an internship at a well-known company called "FakeKos Corp.", a company engaged in data security. Because Ranora is still an apprentice, the workload is not as big as the workload of the company's permanent workers. On Ranora's first day of work, Ranora's apprentice tutor gave her the task of making a program.
 
