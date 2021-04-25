@@ -427,76 +427,149 @@ To make it easier to control the program, the Ranora apprentice supervisor wants
 The Ranora apprentice supervisor also wants the main program created by Ranora to run in two modes. To activate the first mode, the program must be executed with the -z argument, and when it is executed in the first mode, the main program will immediately execute all its operations when the Killer program is run. Meanwhile, to activate the second mode, the program must be run with the -x argument, and when run in the second mode, the main program will stop allowing the processes in each directory that are still running until it is finished (The directory that has been created will download the image to completion and create a txt file, then zip and delete the directory).
 
 ### Answer
+First, we need to get the Daemon template from modul that has been taught to us and changing the value inside sleep into 40
 ```
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
 #include <syslog.h>
 #include <string.h>
-#include <time.h>
 
+int main() {
+  pid_t pid, sid;        // Variabel untuk menyimpan PID
 
-int main(char *argv[]) {
+  pid = fork();     // Menyimpan PID dari Child Process
 
-  pid_t pid, sid;
-
-  pid = fork();  
-  
-
+  /* Keluar saat fork gagal
+  * (nilai variabel pid < 0) */
   if (pid < 0) {
     exit(EXIT_FAILURE);
   }
 
-
+  /* Keluar saat fork berhasil
+  * (nilai variabel pid adalah PID dari child process) */
   if (pid > 0) {
     exit(EXIT_SUCCESS);
   }
-  
 
   umask(0);
-  
 
   sid = setsid();
   if (sid < 0) {
     exit(EXIT_FAILURE);
   }
 
-
-  if ((chdir("/home/asusry/soal3shift2/")) < 0) {
+  if ((chdir("/")) < 0) {
     exit(EXIT_FAILURE);
   }
-  
 
   close(STDIN_FILENO);
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
-  
 
-  while (1) {    
-   
-    //get timestamp
+  while (1) {
+    // Tulis program kalian di sini
+
+    sleep(40);
+  }
+}
+```
+Answering 3a. we need to get the current time. after getting the current time, we put it as string as a directory name that we are creating.
+```
+char timestamp[20];
+
+//get timestamp
     time_t t = time(NULL);
     struct tm w = *localtime(&t);
     
-    char timestamp[100];
-    char d[100] = {"/home/asusry/Documents/"};
     
-    sprintf(timestamp,"%02d-%02d-%02d_%02d:%02d:%02d",w.tm_mday, w.tm_mon + 1, w.tm_year + 1900, w.tm_hour, w.tm_min, w.tm_sec);
     
-    //make a directory with current timestamp name
-    mkdir(timestamp,0777);
+    snprintf(timestamp, sizeof timestamp,"%02d-%02d-%02d_%02d:%02d:%02d",w.tm_mday, w.tm_mon + 1, w.tm_year + 1900, w.tm_hour, w.tm_min, w.tm_sec);
+    
+    //make the folder
+    pid_t child1,child2,child3;
+      child1=fork();
+      if(child1 == 0){
+         child2=fork();
+         if(child2==0){
+            char *argvmk[] = {"mkdir", "-p", timestamp, NULL};
+            execv("/bin/mkdir",argvmk);
+         }
+```
+By doing so, number 3a is answered.
 
-    //change directory into newly created
-    strcat(d,timestamp);
-    chdir(d);
+For 3b, we need to download 10 picture each 5 seconds and with certain pixel. to do so, we certainly need a looping for 10 times for downloading 10 pictures. next, we set the epoch time, present time, and set the naming based on the time that the image being downloaded. after that, before ending each loop, we need to make sleep(5) in order to give gap 5 seconds each loop.
+```
+// download image
+            for(int i=0;i<10;i++){
+               if(fork()==0){
+                  //epoch time
+                  int epoch = (int)time(NULL);
+                  epoch = (epoch % 1000)+50;
+                  //update present time in every loop
+                  time_t t = time(NULL);
+                  struct tm w = *localtime(&t);
 
-    //loop with interval 30s
-    sleep(40);
-  };
+                  //image naming
+                  snprintf(image,sizeof image,"%02d-%02d-%02d_%02d:%02d:%02d.jpg",w.tm_mday, w.tm_mon + 1, w.tm_year + 1900, w.tm_hour, w.tm_min, w.tm_sec);
+                  snprintf(imagepath,sizeof imagepath, "./%s/%s",timestamp,image); 
+                  snprintf(link,sizeof link,"https://picsum.photos/%d.jpg",epoch);
+                  
+                  execl("/usr/bin/wget", "wget", "-q","-O",imagepath, link,"", NULL);
+               }
+               sleep(5);
+            }
+```
+
+Answering 3c, we need to create txt everytime the downloading process finish. inside of the txt is a sentence "Download Success". but, the sentence need to be configured as Caesar cipher encryption shift 5. after that, we need to zip all the entire folder/directory
+
+here is a void for the encryption. that will be called later.
+```
+void encrypt(char folder[]){
+   FILE *fp;
+   char txtpath[40];
+   snprintf(txtpath,sizeof txtpath,"./%s/status.txt",folder);
+   fp  = fopen (txtpath, "w");
+   int key=5;
+   //caesar cipher algorithm
+   char message[]="Download Success", ch;
+   for(int i = 0; message[i] != '\0'; ++i){
+		ch = message[i];
+		if(ch >= 'a' && ch <= 'z'){
+			ch = ch + key;
+			if(ch > 'z'){
+				ch = ch - 'z' + 'a' - 1;
+			}
+			message[i] = ch;
+		}
+		else if(ch >= 'A' && ch <= 'Z'){
+			ch = ch + key;
+			if(ch > 'Z'){
+				ch = ch - 'Z' + 'A' - 1;
+			}
+			message[i] = ch;
+		}
+	}
+   //write to txt
+   printf("Download Success = %s\n",message);
+   for (int i = 0;i<16; i++) 
+      fputc(message[i], fp);
+   fclose(fp);
 }
 ```
+
+next, after 3a and 3b process done, we can continue by calling the void encrypt and also make it into zip.
+```
+encrypt(timestamp);
+            //zip file
+            char zipfile[40];
+            snprintf(zipfile,sizeof zipfile,"%s.zip",timestamp);
+            execl("/usr/bin/zip","zip","-rm",zipfile,timestamp,"-x","*.c",NULL);
+```
+
+and the result is
+![alt text](https://github.com/russkiymalchik/soal-shift-sisop-modul-2-I06-2021/blob/main/screenshots/soal3shift2.jpg)
