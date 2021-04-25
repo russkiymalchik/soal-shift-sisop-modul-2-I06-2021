@@ -1,8 +1,8 @@
 # soal-shift-sisop-modul-2-I06-2021
 ## Group Member Name:
-1. Khairi Wiryawan                      (05111942000023)
+1. Hilmy Hanif Ibrahim                  (05111942000005)
 2. Juan Carlos Tepanus Pardosi          (05111942000017)
-3. Hilmy Hanif Ibrahim					(05111942000005)
+3. Khairi Wiryawan    				          (05111942000023)
 
 ## Problem 1
 Once upon a time, there was a steven who lived a mediocre live. Steven had a girlfriend, but they have broken up before getting together. When he was thinking about his ex, he always watches https://www.youtube.com/watch?v=568DH_9CMKI to relieve his sadness. 
@@ -234,6 +234,8 @@ int main()
   }
 }
 ```
+### note
+I'm still having trouble changing the date and time. Everytime I change it, it keeps reverting back to today's date and time.
 
 ## Problem 2
 
