@@ -237,8 +237,6 @@ int main()
   }
 }
 ```
-### extra note:
-I'm still having trouble changing the system's date and time. Everytime I change it, it keeps reverting back to today's date and time.
 
 ## Problem 2
 
